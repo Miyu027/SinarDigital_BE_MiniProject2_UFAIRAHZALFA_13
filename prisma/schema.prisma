@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Monster {
+  id            Int              @id @default(autoincrement())
+  name          String
+  level         Int
+  image         String?          
+  skills        Skill[]          
+  favorites     FavoriteThing[]  
+  personalities Personality[]    @relation("MonsterPersonality")
+
+  createdAt     DateTime         @default(now())
+}
+
+model Skill {
+  id        Int     @id @default(autoincrement())
+  name      String
+  power     Int
+  monsterId Int
+  monster   Monster @relation(fields: [monsterId], references: [id])
+}
+
+model FavoriteThing {
+  id        Int     @id @default(autoincrement())
+  name      String
+  monsterId Int
+  monster   Monster @relation(fields: [monsterId], references: [id])
+}
+
+model Personality {
+  id        Int       @id @default(autoincrement())
+  name      String
+  monsters  Monster[] @relation("MonsterPersonality")
+}
